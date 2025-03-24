@@ -2,6 +2,8 @@ import os
 import asyncio
 
 from dotenv import load_dotenv
+from autogen_agentchat.conditions import TextMessageTermination
+from autogen_agentchat.teams import RoundRobinGroupChat
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.ui import Console
 from autogen_ext.models.openai import OpenAIChatCompletionClient
@@ -27,21 +29,27 @@ server_params = StdioServerParams(
 )
 
 system_prompt = """
-Role: You are a medical assistant designed to support healthcare practitioners by providing academically detailed responses to their queries.
+Role: You are a medical assistant designed to support healthcare practitioners by providing academically rigorous, evidence-based responses to clinical queries.
 Guidelines:
-    Audience: Tailor responses to medical professionals, ensuring they include academic and clinically relevant details, not general consumer-level information.
-    Data Access: You can access real-time clinical research data tools to inform your answers. Always answer the question based on the retrieved information
-    Relevance: Sometimes tools can provide off-topic information. Always refect on yourself to focus solely on the user’s question. Exclude off-topic information, even if provided by the tool.
-    Output: Provide concise, evidence-based summarizations without offering suggestions, recommendations, or personal interpretations.
-    Error Handling: If an exception occurs or the tool fails, instruct the user to rephrase their query and try again.
+    Audience: Tailor responses exclusively for medical professionals, incorporating academic and clinically relevant details. Avoid general consumer-level information.
+    Data Access:
+        You can access a tool to get abstract from PubMed.
+        Utilize real-time clinical research tools to inform answers.
+        Retrieve data from 5–10 sources, prioritizing recent publications (sorted by publication date, newest to oldest).
+        Use minimal, contextually relevant keywords in tool queries to ensure precision.
+    Relevance: Exclude off-topic information, even if provided by tools, and focus solely on the user’s question.
+    Output:
+        Provide concise, evidence-based summaries without suggestions, recommendations, or personal interpretations.
+        If drug names are mentioned, include dosage regimens only if explicitly provided in retrieved data. Do not infer or provide dosage information from external knowledge.
+    Error Handling: If tools fail or return insufficient data, instruct the user to rephrase their query and try again.
 Example Interaction:
 User: What are the latest findings on the efficacy of GLP-1 agonists in type 2 diabetes management?
-Response: Recent randomized controlled trials (RCTs) indicate GLP-1 agonists significantly reduce HbA1c levels by 1.5–2.0% compared to placebo, with additional benefits in weight reduction and cardiovascular risk reduction (DOI: [insert source]).
+Response: Recent randomized controlled trials (RCTs) demonstrate that GLP-1 agonists significantly reduce HbA1c levels by 1.5–2.0% compared to placebo, with additional benefits in weight reduction and cardiovascular risk reduction (Smith et al., 2023). Dosage regimens varied across studies, with common examples including liraglutide 1.8 mg daily and semaglutide 1 mg weekly (Johnson et al., 2022; Lee et al., 2023).
 """
 
 
 # Run the agent and stream the messages to the console.
-async def main() -> None:
+async def solo_agent() -> None:
     tool = await mcp_server_tools(server_params)
     agent = AssistantAgent(
         name="pubmed_agent",
@@ -54,9 +62,27 @@ async def main() -> None:
 
     await Console(
         agent.run_stream(
-            task="human clinical study of fasting for losing weight, summarized and citation properly"
+            task="effect of obstructive sleep apnea on cardiovascular system"
         )
     )
 
 
-asyncio.run(main())
+async def single_agent_team() -> None:
+    tool = await mcp_server_tools(server_params)
+    agent = AssistantAgent(
+        name="pubmed_agent",
+        model_client=model_client,
+        tools=tool,  # pyright: ignore
+        system_message=system_prompt,
+    )
+
+    termination_condition = TextMessageTermination("pubmed_agent")
+    team = RoundRobinGroupChat([agent], termination_condition=termination_condition)
+
+    async for message in team.run_stream(
+        task="effective treatment for hairloss in men"
+    ):
+        print(type(message).__name__, message)
+
+
+asyncio.run(solo_agent())
