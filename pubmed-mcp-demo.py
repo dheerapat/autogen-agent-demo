@@ -62,7 +62,7 @@ async def solo_agent() -> None:
 
     await Console(
         agent.run_stream(
-            task="effect of obstructive sleep apnea on cardiovascular system"
+            task="aspirin for stroke patients"
         )
     )
 
