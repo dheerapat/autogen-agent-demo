@@ -8,5 +8,6 @@ dependencies = [
     "autogen-agentchat>=0.4.9.2",
     "autogen-core>=0.4.9.2",
     "autogen-ext[mcp,openai]>=0.4.9.2",
+    "pubmedmcp>=0.1.3",
     "python-dotenv>=1.0.1",
 ]

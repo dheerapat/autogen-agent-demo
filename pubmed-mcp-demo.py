@@ -25,7 +25,7 @@ model_client = OpenAIChatCompletionClient(
 
 server_params = StdioServerParams(
     command="uvx",
-    args=["pubmedmcp@latest"],
+    args=["pubmedmcp@latest"]
 )
 
 system_prompt = """
@@ -51,10 +51,11 @@ Response: Recent randomized controlled trials (RCTs) demonstrate that GLP-1 agon
 # Run the agent and stream the messages to the console.
 async def solo_agent() -> None:
     tool = await mcp_server_tools(server_params)
+    print(tool)
     agent = AssistantAgent(
         name="pubmed_agent",
         model_client=model_client,
-        tools=tool,  # pyright: ignore
+        tools=tool, # type: ignore
         system_message=system_prompt,
         reflect_on_tool_use=True,
         model_client_stream=True,  # Enable streaming tokens from the model client.
@@ -62,7 +63,7 @@ async def solo_agent() -> None:
 
     await Console(
         agent.run_stream(
-            task="aspirin for stroke patients"
+            task="clinical study of pembrolizumab for non small cell lung cancer"
         )
     )
 
