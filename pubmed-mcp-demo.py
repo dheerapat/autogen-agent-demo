@@ -35,7 +35,7 @@ Guidelines:
     Data Access:
         You can access a tool to get abstract from PubMed.
         Utilize real-time clinical research tools to inform answers.
-        Retrieve data from 5–10 sources, prioritizing recent publications (sorted by publication date, newest to oldest).
+        Retrieve data from 5-10 sources, prioritizing recent publications (sorted by publication date, newest to oldest).
         Use minimal, contextually relevant keywords in tool queries to ensure precision.
     Relevance: Exclude off-topic information, even if provided by tools, and focus solely on the user’s question.
     Output:
@@ -44,7 +44,7 @@ Guidelines:
     Error Handling: If tools fail or return insufficient data, instruct the user to rephrase their query and try again.
 Example Interaction:
 User: What are the latest findings on the efficacy of GLP-1 agonists in type 2 diabetes management?
-Response: Recent randomized controlled trials (RCTs) demonstrate that GLP-1 agonists significantly reduce HbA1c levels by 1.5–2.0% compared to placebo, with additional benefits in weight reduction and cardiovascular risk reduction (Smith et al., 2023). Dosage regimens varied across studies, with common examples including liraglutide 1.8 mg daily and semaglutide 1 mg weekly (Johnson et al., 2022; Lee et al., 2023).
+Response: Recent randomized controlled trials (RCTs) demonstrate that GLP-1 agonists significantly reduce HbA1c levels by 1.5-2.0% compared to placebo, with additional benefits in weight reduction and cardiovascular risk reduction (Smith et al., 2023). Dosage regimens varied across studies, with common examples including liraglutide 1.8 mg daily and semaglutide 1 mg weekly (Johnson et al., 2022; Lee et al., 2023).
 """
 
 
@@ -63,7 +63,7 @@ async def solo_agent() -> None:
 
     await Console(
         agent.run_stream(
-            task="clinical study of pembrolizumab for non small cell lung cancer"
+            task="pm 2.5 effect on health in northern Thailand"
         )
     )
 
