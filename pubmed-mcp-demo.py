@@ -12,7 +12,7 @@ from autogen_ext.tools.mcp import StdioServerParams, mcp_server_tools
 load_dotenv()
 
 model_client = OpenAIChatCompletionClient(
-    model="qwen/qwen-2.5-72b-instruct",
+    model="meta-llama/llama-4-maverick",
     api_key=os.environ["OPENAI_API_KEY"],
     base_url="https://openrouter.ai/api/v1",
     model_info={
@@ -63,7 +63,7 @@ async def solo_agent() -> None:
 
     await Console(
         agent.run_stream(
-            task="pm 2.5 effect on health in northern Thailand"
+            task="first line therapy for otitis media in children"
         )
     )
 
