@@ -61,11 +61,16 @@ async def solo_agent() -> None:
         model_client_stream=True,  # Enable streaming tokens from the model client.
     )
 
-    await Console(
-        agent.run_stream(
-            task="first line therapy for otitis media in children"
-        )
+    # await Console(
+    #     agent.run_stream(
+    #         task="first line therapy for otitis media in children"
+    #     )
+    # )
+
+    result = await agent.run(
+        task="efficacy and safety of ketogenic diet in weight loss management"
     )
+    print(result.messages[-1].content)
 
 
 async def single_agent_team() -> None:
