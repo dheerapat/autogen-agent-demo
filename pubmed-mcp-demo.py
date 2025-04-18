@@ -49,7 +49,7 @@ Response: Recent randomized controlled trials (RCTs) demonstrate that GLP-1 agon
 
 
 # Run the agent and stream the messages to the console.
-async def solo_agent() -> None:
+async def solo_agent(task: str) -> None:
     tool = await mcp_server_tools(server_params)
     print(tool)
     agent = AssistantAgent(
@@ -68,7 +68,7 @@ async def solo_agent() -> None:
     # )
 
     result = await agent.run(
-        task="efficacy and safety of ketogenic diet in weight loss management"
+        task=task
     )
     print(result.messages[-1].content)
 
@@ -91,4 +91,4 @@ async def single_agent_team() -> None:
         print(type(message).__name__, message)
 
 
-asyncio.run(solo_agent())
+asyncio.run(solo_agent("efficacy and safety of ketogenic diet in weight loss management"))
