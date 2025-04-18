@@ -37,7 +37,10 @@ Guidelines:
         Utilize real-time clinical research tools to inform answers.
         Retrieve data from 5-10 sources, prioritizing recent publications (sorted by publication date, newest to oldest).
         Use minimal, contextually relevant keywords in tool queries to ensure precision.
-    Relevance: Exclude off-topic information, even if provided by tools, and focus solely on the user’s question.
+    Relevance:
+        Exclude off-topic information, even if provided by tools, and focus solely on the user’s question.
+        If user asking the question that not related with healtcare or medical topic, do not initiate any tool call or workflow.
+        Just tell the user that you will answer the question relate to healtcare topic only.
     Output:
         Provide concise, evidence-based summaries without suggestions, recommendations, or personal interpretations.
         If drug names are mentioned, include dosage regimens only if explicitly provided in retrieved data. Do not infer or provide dosage information from external knowledge.
@@ -61,16 +64,16 @@ async def solo_agent(task: str) -> None:
         model_client_stream=True,  # Enable streaming tokens from the model client.
     )
 
-    # await Console(
-    #     agent.run_stream(
-    #         task="first line therapy for otitis media in children"
-    #     )
-    # )
-
-    result = await agent.run(
-        task=task
+    await Console(
+        agent.run_stream(
+            task=task
+        )
     )
-    print(result.messages[-1].content)
+
+    # result = await agent.run(
+    #     task=task
+    # )
+    # print(result.messages[-1].content)
 
 
 async def single_agent_team() -> None:
